@@ -1,0 +1,9 @@
+
+backend/target/
+backend/data/
+backend/*.mv.db
+backend/*.trace.db
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

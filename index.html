@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Lost & Found</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Smart Lost & Found</h1>
+        <p>Find what you lost. Help others find what they lost.</p>
+    </header>
+
+    <main>
+
+        <section class="form-section">
+            <h2>Report an Item</h2>
+
+            <input type="text" id="itemName" placeholder="Enter item name">
+
+            <input type="text" id="location" placeholder="Where was it lost/found?">
+
+            <select id="status">
+                <option value="Lost">Lost</option>
+                <option value="Found">Found</option>
+            </select>
+
+            <button onclick="addItem()">Add Item</button>
+        </section>
+
+        
+<section>
+    <h2>Lost & Found Items</h2>
+
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="Search items..."
+        oninput="displayItems()"
+    >
+
+    <select id="filterStatus" onchange="displayItems()">
+        <option value="All">All Items</option>
+        <option value="Lost">Lost Items</option>
+        <option value="Found">Found Items</option>
+    </select>
+
+    <div id="itemList"></div>
+</section>
+
+
+    </main>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
