@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | ARMIET Smart Lost &amp; Found</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <a class="brand" href="index.html">
+      <img src="armiet-logo.png" alt="ARMIET Logo" class="logo">
+      <div class="brand-text">
+        <strong>ARMIET Smart Lost &amp; Found</strong>
+        <span>Campus report dashboard</span>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link active" href="dashboard.html">Dashboard</a>
+      <a class="nav-button" href="index.html#reportForm">Report Item</a>
+      <a class="nav-link" href="admin.html">Admin</a>
+    </nav>
+  </header>
+
+  <main class="page-container">
+    <div class="page-header">
+      <h1>Lost &amp; Found Dashboard</h1>
+      <p class="muted">Overview of the reports available in this browser.</p>
+    </div>
+
+    <div class="stats-grid">
+      <article class="stat-card">
+        <h3>Total Reports</h3>
+        <p id="dashboardTotal">0</p>
+      </article>
+      <article class="stat-card">
+        <h3>Lost Items</h3>
+        <p id="dashboardLost">0</p>
+      </article>
+      <article class="stat-card">
+        <h3>Found Items</h3>
+        <p id="dashboardFound">0</p>
+      </article>
+    </div>
+
+    <div class="dashboard-actions">
+      <a class="primary-button" href="index.html#reportForm">Submit a Report</a>
+      <a class="outline-dark-button" href="index.html#browseItems">Go to Home</a>
+      <a class="outline-dark-button" href="admin.html">Manage Reports</a>
+    </div>
+
+    <section>
+      <h2 class="section-title">All Reports</h2>
+      <div class="toolbar">
+        <input id="dashboardSearch" type="search"
+               placeholder="Search reports..." aria-label="Search reports">
+        <select id="dashboardFilter" aria-label="Filter reports">
+          <option value="All">All Reports</option>
+          <option value="Lost">Lost Only</option>
+          <option value="Found">Found Only</option>
+        </select>
+      </div>
+      <div id="dashboardItems" class="item-grid"></div>
+      <p id="dashboardEmpty" class="empty-message">No reports available.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-content">
+      <img src="armiet-logo.png" alt="ARMIET Logo" class="footer-logo">
+      <div class="footer-contact">
+        <h3>Contact ARMIET</h3>
+        <p>A.S. Rao Nagar, Vill-Sapgaon, Tal-Shahpur, District Thane – 421601</p>
+        <p>Phone: <a href="tel:9137990728">9137990728</a> | <a href="tel:8356988946">8356988946</a> | <a href="tel:9082204251">9082204251</a></p>
+        <p>Email: <a href="mailto:aakrutiyadav35@gmail.com">aakrutiyadav35@gmail.com</a> | <a href="mailto:hatimansari2803@gmail.com">hatimansari2803@gmail.com</a> | <a href="mailto:kirtiyadav9770@gmail.com">kirtiyadav9770@gmail.com</a></p>
+        <p>Website: <a href="https://armiet.in/" target="_blank" rel="noopener noreferrer">armiet.in</a></p>
+        <p class="copyright">ARMIET Smart Lost &amp; Found — Student Project</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

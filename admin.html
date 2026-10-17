@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | ARMIET Smart Lost &amp; Found</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <a class="brand" href="index.html">
+      <img src="armiet-logo.png" alt="ARMIET Logo" class="logo">
+      <div class="brand-text">
+        <strong>ARMIET Smart Lost &amp; Found</strong>
+        <span>Report management</span>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link" href="dashboard.html">Dashboard</a>
+    </nav>
+  </header>
+
+  <main class="page-container">
+    <div class="page-header">
+      <h1>Report Management</h1>
+      <p class="muted">Review and manage the reports stored in this browser.</p>
+    </div>
+
+    <div class="admin-notice">
+      <strong>Demo limitation:</strong> This page has no administrator login.
+      A hidden URL is not authentication; protect admin actions through your
+      backend before using this with real student records.
+    </div>
+
+    <div class="stats-grid">
+      <article class="stat-card">
+        <h3>Total Reports</h3>
+        <p id="adminTotal">0</p>
+      </article>
+      <article class="stat-card">
+        <h3>Lost Items</h3>
+        <p id="adminLost">0</p>
+      </article>
+      <article class="stat-card">
+        <h3>Found Items</h3>
+        <p id="adminFound">0</p>
+      </article>
+    </div>
+
+    <section class="panel">
+      <h2 class="section-title">Manage Reports</h2>
+
+      <div class="toolbar">
+        <input id="adminSearch" type="search"
+               placeholder="Search item, PRN, contact or location..."
+               aria-label="Search reports">
+        <select id="adminFilter" aria-label="Filter reports">
+          <option value="All">All Reports</option>
+          <option value="Lost">Lost Only</option>
+          <option value="Found">Found Only</option>
+        </select>
+        <button id="exportButton" class="primary-button" type="button">Export CSV</button>
+      </div>
+
+      <p id="adminMessage" class="form-message" role="status"></p>
+
+      <div class="table-wrap">
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Status</th>
+              <th>Category</th>
+              <th>Location</th>
+              <th>Date</th>
+              <th>Reported By</th>
+              <th>PRN Number</th>
+              <th>Contact Number</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="adminTableBody"></tbody>
+        </table>
+      </div>
+
+      <p id="adminEmpty" class="empty-message">No reports available.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-content">
+      <img src="armiet-logo.png" alt="ARMIET Logo" class="footer-logo">
+      <div class="footer-contact">
+        <h3>Contact ARMIET</h3>
+        <p>A.S. Rao Nagar, Vill-Sapgaon, Tal-Shahpur, District Thane – 421601</p>
+        <p>Phone: <a href="tel:9137990728">9137990728</a> | <a href="tel:8356988946">8356988946</a> | <a href="tel:9082204251">9082204251</a></p>
+        <p>Email: <a href="mailto:aakrutiyadav35@gmail.com">aakrutiyadav35@gmail.com</a> | <a href="mailto:hatimansari2803@gmail.com">hatimansari2803@gmail.com</a> | <a href="mailto:kirtiyadav9770@gmail.com">kirtiyadav9770@gmail.com</a></p>
+        <p>Website: <a href="https://armiet.in/" target="_blank" rel="noopener noreferrer">armiet.in</a></p>
+        <p class="copyright">ARMIET Smart Lost &amp; Found — Student Project</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="admin.js"></script>
+</body>
+</html>

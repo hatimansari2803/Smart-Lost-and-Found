@@ -1,60 +1,187 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Lost & Found</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARMIET Smart Lost &amp; Found</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+  <header class="navbar">
+    <a class="brand" href="index.html">
+      <img src="armiet-logo.png" alt="ARMIET Logo" class="logo">
+      <div class="brand-text">
+        <strong>ARMIET Smart Lost &amp; Found</strong>
+        <span>Find what you lost. Help others find what they lost.</span>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a class="nav-link active" href="index.html">Home</a>
+      <a class="nav-link" href="dashboard.html">Dashboard</a>
+      <a class="nav-button" href="#reportForm">Report Item</a>
+    </nav>
+  </header>
 
-    <header>
-        <h1>Smart Lost & Found</h1>
-        <p>Find what you lost. Help others find what they lost.</p>
-    </header>
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <span class="eyebrow">ARMIET CAMPUS SERVICE</span>
+        <h1>Lost something? <span>Let's find it.</span></h1>
+        <p>Report lost or found belongings and help our campus community reconnect with their items.</p>
+        <div class="hero-actions">
+          <a class="primary-button" href="#reportForm">Report an Item</a>
+          <a class="outline-button" href="#browseItems">Browse Reports</a>
+        </div>
+      </div>
+      <div class="hero-image-wrap">
+        <img src="armiet-building.jpg.jpeg" alt="ARMIET College Campus" class="campus-image">
+      </div>
+    </section>
 
-    <main>
+    <section class="main-container">
+      <div class="stats-grid">
+        <article class="stat-card">
+          <h3>Total Reports</h3>
+          <p id="totalCount">0</p>
+        </article>
+        <article class="stat-card">
+          <h3>Lost Items</h3>
+          <p id="lostCount">0</p>
+        </article>
+        <article class="stat-card">
+          <h3>Found Items</h3>
+          <p id="foundCount">0</p>
+        </article>
+      </div>
 
-        <section class="form-section">
-            <h2>Report an Item</h2>
+      <section class="panel" id="reportForm">
+        <h2 class="section-title">Report a Lost or Found Item</h2>
+        <p class="muted">Enter accurate details so the item can be identified.</p>
+        <p class="muted"><span class="required-star">*</span> indicates a mandatory field.</p>
 
-            <input type="text" id="itemName" placeholder="Enter item name">
+        <form id="itemForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="studentName">Your Name <span class="required-star">*</span></label>
+              <input id="studentName" name="studentName" type="text" maxlength="80" required>
+            </div>
 
-            <input type="text" id="location" placeholder="Where was it lost/found?">
+            <div class="form-group">
+              <label for="prn">PRN Number <span class="required-star">*</span></label>
+              <input id="prn" name="prn" type="text" maxlength="30"
+                     placeholder="Enter your PRN number" required>
+            </div>
 
-            <select id="status">
+            <div class="form-group">
+              <label for="department">Department / Class <span class="required-star">*</span></label>
+              <input id="department" name="department" type="text" maxlength="80" required>
+            </div>
+
+            <div class="form-group">
+              <label for="contactNumber">Contact Number <span class="required-star">*</span></label>
+              <input id="contactNumber" name="contactNumber" type="tel"
+                     inputmode="numeric" pattern="[0-9]{10}" maxlength="10"
+                     placeholder="Enter 10-digit mobile number"
+                     title="Enter a 10-digit mobile number" required>
+            </div>
+
+            <div class="form-group">
+              <label for="itemName">Item Name <span class="required-star">*</span></label>
+              <input id="itemName" name="itemName" type="text" maxlength="100"
+                     placeholder="e.g. Black wallet" required>
+            </div>
+
+            <div class="form-group">
+              <label for="category">Category <span class="required-star">*</span></label>
+              <select id="category" name="category" required>
+                <option value="">Select category</option>
+                <option>Electronics</option>
+                <option>ID Card</option>
+                <option>Books &amp; Notes</option>
+                <option>Bag</option>
+                <option>Wallet</option>
+                <option>Keys</option>
+                <option>Clothing</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="status">Report Type <span class="required-star">*</span></label>
+              <select id="status" name="status" required>
+                <option value="">Select status</option>
                 <option value="Lost">Lost</option>
                 <option value="Found">Found</option>
-            </select>
+              </select>
+            </div>
 
-            <button onclick="addItem()">Add Item</button>
-        </section>
+            <div class="form-group">
+              <label for="location">Location <span class="required-star">*</span></label>
+              <input id="location" name="location" type="text" maxlength="150"
+                     placeholder="e.g. Library, Block A" required>
+            </div>
 
-        
-<section>
-    <h2>Lost & Found Items</h2>
+            <div class="form-group">
+              <label for="itemDate">Date <span class="required-star">*</span></label>
+              <input id="itemDate" name="itemDate" type="date" required>
+            </div>
 
-    <input
-        type="text"
-        id="searchInput"
-        placeholder="Search items..."
-        oninput="displayItems()"
-    >
+            <div class="form-group">
+              <label for="email">Contact Email <span class="required-star">*</span></label>
+              <input id="email" name="email" type="email" maxlength="150" required>
+            </div>
 
-    <select id="filterStatus" onchange="displayItems()">
-        <option value="All">All Items</option>
-        <option value="Lost">Lost Items</option>
-        <option value="Found">Found Items</option>
-    </select>
+            <div class="form-group full-width">
+              <label for="description">Description <span class="required-star">*</span></label>
+              <textarea id="description" name="description" maxlength="1000"
+                        placeholder="Describe the item and identifying features." required></textarea>
+            </div>
 
-    <div id="itemList"></div>
-</section>
+            <div class="form-group full-width">
+              <label for="photo">Item Photo (optional, max 1 MB)</label>
+              <input id="photo" name="photo" type="file"
+                     accept="image/png,image/jpeg,image/webp">
+            </div>
+          </div>
 
+          <p id="formMessage" class="form-message" role="status"></p>
+          <button class="primary-button" id="submitButton" type="submit">Submit Report</button>
+        </form>
+      </section>
 
-    </main>
+      <section id="browseItems">
+        <h2 class="section-title">Recent Lost &amp; Found Reports</h2>
+        <div class="toolbar">
+          <input type="search" id="searchInput"
+                 placeholder="Search items, categories or locations..."
+                 aria-label="Search reports">
+          <select id="filterStatus" aria-label="Filter reports by status">
+            <option value="All">All Reports</option>
+            <option value="Lost">Lost Only</option>
+            <option value="Found">Found Only</option>
+          </select>
+        </div>
+        <div id="itemList" class="item-grid"></div>
+        <p id="emptyMessage" class="empty-message">No reports yet. Be the first to submit one.</p>
+      </section>
+    </section>
+  </main>
 
-    <script src="script.js"></script>
+  <footer class="site-footer">
+    <div class="footer-content">
+      <img src="armiet-logo.png" alt="ARMIET Logo" class="footer-logo">
+      <div class="footer-contact">
+        <h3>Contact ARMIET</h3>
+        <p>A.S. Rao Nagar, Vill-Sapgaon, Tal-Shahpur, District Thane – 421601</p>
+        <p>Phone: <a href="tel:9137990728">9137990728</a> | <a href="tel:8356988946">8356988946</a> | <a href="tel:9082204251">9082204251</a></p>
+        <p>Email: <a href="mailto:aakrutiyadav35@gmail.com">aakrutiyadav35@gmail.com</a> | <a href="mailto:hatimansari2803@gmail.com">hatimansari2803@gmail.com</a> | <a href="mailto:kirtiyadav9770@gmail.com">kirtiyadav9770@gmail.com</a></p>
+        <p>Website: <a href="https://armiet.in/" target="_blank" rel="noopener noreferrer">armiet.in</a></p>
+        <p class="copyright">ARMIET Smart Lost &amp; Found — Student Project</p>
+      </div>
+    </div>
+  </footer>
 
+  <script src="script.js"></script>
 </body>
 </html>
