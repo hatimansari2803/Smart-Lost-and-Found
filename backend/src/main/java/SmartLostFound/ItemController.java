@@ -20,23 +20,41 @@ public class ItemController {
         return itemRepository.findAll();
     }
 
+    @GetMapping("/{id}")
+    public Item getItemById(@PathVariable Long id) {
+        return itemRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Item not found: " + id));
+    }
+
     @PostMapping
     public Item addItem(@RequestBody Item item) {
+        item.setContact(item.getContactNumber());
         return itemRepository.save(item);
     }
 
     @PutMapping("/{id}")
     public Item updateItem(@PathVariable Long id,
                            @RequestBody Item updatedItem) {
+
         Item item = itemRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("Item not found: " + id));
 
         item.setItemName(updatedItem.getItemName());
+        item.setCategory(updatedItem.getCategory());
         item.setLocation(updatedItem.getLocation());
         item.setStatus(updatedItem.getStatus());
+        item.setItemDate(updatedItem.getItemDate());
         item.setDescription(updatedItem.getDescription());
-        item.setContact(updatedItem.getContact());
+        item.setStudentName(updatedItem.getStudentName());
+        item.setPrn(updatedItem.getPrn());
+        item.setDepartment(updatedItem.getDepartment());
+        item.setContactNumber(updatedItem.getContactNumber());
+        item.setEmail(updatedItem.getEmail());
+        item.setPhoto(updatedItem.getPhoto());
+        item.setCreatedAt(updatedItem.getCreatedAt());
+        item.setContact(updatedItem.getContactNumber());
 
         return itemRepository.save(item);
     }
