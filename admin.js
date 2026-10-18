@@ -1,22 +1,18 @@
 
 "use strict";
 
-const STORAGE_KEY = "armietLostFoundReports";
+const API_URL =
+  "https://smart-lost-and-found-1-tib2.onrender.com/api/items";
 
 const adminTableBody = document.getElementById("adminTableBody");
 const adminEmpty = document.getElementById("adminEmpty");
 const adminSearch = document.getElementById("adminSearch");
 const adminFilter = document.getElementById("adminFilter");
 const adminMessage = document.getElementById("adminMessage");
+const exportButton = document.getElementById("exportButton");
 
-function getAdminReports() {
-  try {
-    const reports = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-    return Array.isArray(reports) ? reports : [];
-  } catch {
-    return [];
-  }
-}
+let adminReports = [];
+let isLoading = false;
 
 function safeText(value) {
   return String(value ?? "").replace(/[&<>"']/g, character => ({
@@ -28,79 +24,176 @@ function safeText(value) {
   })[character]);
 }
 
-function renderAdmin() {
-  const reports = getAdminReports();
+function showMessage(message, type = "success") {
+  adminMessage.textContent = message;
+  adminMessage.className = `form-message ${type}`;
+}
 
-  document.getElementById("adminTotal").textContent = reports.length;
+async function loadAdminReports() {
+  if (isLoading) return;
+  isLoading = true;
+
+  adminEmpty.hidden = false;
+  adminEmpty.textContent = "Loading reports...";
+
+  try {
+    const response = await fetch(API_URL);
+
+    if (!response.ok) {
+      throw new Error(`Server returned ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (!Array.isArray(data)) {
+      throw new Error("Unexpected response from server.");
+    }
+
+    adminReports = data;
+    renderAdmin();
+  } catch (error) {
+    console.error("Could not load admin reports:", error);
+    adminTableBody.innerHTML = "";
+    document.getElementById("adminTotal").textContent = "—";
+    document.getElementById("adminLost").textContent = "—";
+    document.getElementById("adminFound").textContent = "—";
+    adminEmpty.hidden = false;
+    adminEmpty.textContent =
+      "Unable to load reports. Please refresh and try again.";
+    showMessage(
+      "Could not connect to the backend. Check your internet connection and try again.",
+      "error"
+    );
+  } finally {
+    isLoading = false;
+  }
+}
+
+function renderAdmin() {
+  document.getElementById("adminTotal").textContent =
+    adminReports.length;
+
   document.getElementById("adminLost").textContent =
-    reports.filter(report => report.status === "Lost").length;
+    adminReports.filter(report =>
+      String(report.status).toLowerCase() === "lost"
+    ).length;
+
   document.getElementById("adminFound").textContent =
-    reports.filter(report => report.status === "Found").length;
+    adminReports.filter(report =>
+      String(report.status).toLowerCase() === "found"
+    ).length;
 
   const query = (adminSearch.value || "").trim().toLowerCase();
   const status = adminFilter.value || "All";
 
-  const filtered = reports.filter(report => {
+  const filtered = adminReports.filter(report => {
     const searchable = [
-      report.itemName, report.category, report.location,
-      report.status, report.studentName, report.department,
-      report.prn, report.contactNumber, report.email
+      report.itemName,
+      report.category,
+      report.location,
+      report.status,
+      report.studentName,
+      report.department,
+      report.prn,
+      report.contactNumber || report.contact,
+      report.email
     ].join(" ").toLowerCase();
 
     return searchable.includes(query) &&
-      (status === "All" || report.status === status);
+      (status === "All" ||
+       String(report.status).toLowerCase() === status.toLowerCase());
   });
 
   adminTableBody.innerHTML = filtered.map(report => `
     <tr>
-      <td>${safeText(report.itemName)}</td>
-      <td><span class="badge ${report.status === "Lost" ? "lost" : "found"}">${safeText(report.status)}</span></td>
-      <td>${safeText(report.category)}</td>
-      <td>${safeText(report.location)}</td>
-      <td>${safeText(report.itemDate)}</td>
-      <td>${safeText(report.studentName)}</td>
+      <td>${safeText(report.itemName || "—")}</td>
+      <td>
+        <span class="badge ${
+          String(report.status).toLowerCase() === "lost"
+            ? "lost"
+            : "found"
+        }">${safeText(report.status || "Unknown")}</span>
+      </td>
+      <td>${safeText(report.category || "—")}</td>
+      <td>${safeText(report.location || "—")}</td>
+      <td>${safeText(report.itemDate || "—")}</td>
+      <td>${safeText(report.studentName || "—")}</td>
       <td>${safeText(report.prn || "Not provided")}</td>
-      <td>${safeText(report.contactNumber || "Not provided")}</td>
-      <td><button class="delete-button" type="button" data-delete-id="${safeText(report.id)}">Delete</button></td>
+      <td>${safeText(report.contactNumber || report.contact || "Not provided")}</td>
+      <td>
+        <button
+          class="delete-button"
+          type="button"
+          data-delete-id="${safeText(report.id)}"
+        >Delete</button>
+      </td>
     </tr>
   `).join("");
 
   adminEmpty.hidden = filtered.length > 0;
+
   if (!filtered.length) {
-    adminEmpty.textContent = reports.length
+    adminEmpty.textContent = adminReports.length
       ? "No reports match your search."
       : "No reports available.";
   }
 }
 
-adminTableBody.addEventListener("click", event => {
+adminTableBody.addEventListener("click", async event => {
   const button = event.target.closest("[data-delete-id]");
   if (!button) return;
 
   const reportId = button.dataset.deleteId;
-  if (!confirm("Delete this report from this browser?")) return;
 
-  const updated = getAdminReports().filter(
-    report => String(report.id) !== reportId
-  );
+  if (!confirm(
+    "Delete this report from the shared database? This action cannot be undone."
+  )) {
+    return;
+  }
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  button.disabled = true;
+  button.textContent = "Deleting...";
 
-  adminMessage.textContent = "Report deleted from this browser.";
-  adminMessage.className = "form-message success";
-  renderAdmin();
+  try {
+    const response = await fetch(
+      `${API_URL}/${encodeURIComponent(reportId)}`,
+      { method: "DELETE" }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Server returned ${response.status}`);
+    }
+
+    adminReports = adminReports.filter(
+      report => String(report.id) !== reportId
+    );
+
+    renderAdmin();
+    showMessage("Report deleted from the shared database.", "success");
+  } catch (error) {
+    console.error("Could not delete report:", error);
+    showMessage(
+      "Could not delete the report. Please try again.",
+      "error"
+    );
+    await loadAdminReports();
+  }
 });
 
 function csvCell(value) {
-  return `"${String(value ?? "").replace(/"/g, '""')}"`;
+  let text = String(value ?? "");
+
+  // Prevent spreadsheet formulas from being executed when CSV is opened.
+  if (/^[\s]*[=+\-@]/.test(text)) {
+    text = "'" + text;
+  }
+
+  return `"${text.replace(/"/g, '""')}"`;
 }
 
-document.getElementById("exportButton").addEventListener("click", () => {
-  const reports = getAdminReports();
-
-  if (!reports.length) {
-    adminMessage.textContent = "There are no reports to export.";
-    adminMessage.className = "form-message error";
+exportButton.addEventListener("click", () => {
+  if (!adminReports.length) {
+    showMessage("There are no reports to export.", "error");
     return;
   }
 
@@ -121,8 +214,14 @@ document.getElementById("exportButton").addEventListener("click", () => {
 
   const csv = [
     columns.map(column => csvCell(column[0])).join(","),
-    ...reports.map(report =>
-      columns.map(column => csvCell(report[column[1]])).join(",")
+    ...adminReports.map(report =>
+      columns.map(([heading, key]) => {
+        const value = key === "contactNumber"
+          ? report.contactNumber || report.contact
+          : report[key];
+
+        return csvCell(value);
+      }).join(",")
     )
   ].join("\r\n");
 
@@ -140,12 +239,10 @@ document.getElementById("exportButton").addEventListener("click", () => {
   link.remove();
   URL.revokeObjectURL(url);
 
-  adminMessage.textContent = "CSV export downloaded.";
-  adminMessage.className = "form-message success";
+  showMessage("CSV export downloaded.", "success");
 });
 
 adminSearch.addEventListener("input", renderAdmin);
 adminFilter.addEventListener("change", renderAdmin);
-window.addEventListener("storage", renderAdmin);
 
-renderAdmin();
+loadAdminReports();
