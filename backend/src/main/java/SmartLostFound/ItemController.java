@@ -1,18 +1,26 @@
-
 package SmartLostFound;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/items")
 @CrossOrigin(origins = "*")
 public class ItemController {
 
-    private final ItemRepository itemRepository;
+    private static final Logger log = LoggerFactory.getLogger(ItemController.class);
 
-    public ItemController(ItemRepository itemRepository) {
+    private final ItemRepository itemRepository;
+    private final EmailAlertService emailAlertService;
+
+    public ItemController(ItemRepository itemRepository,
+                          EmailAlertService emailAlertService) {
         this.itemRepository = itemRepository;
+        this.emailAlertService = emailAlertService;
     }
 
     @GetMapping
@@ -30,7 +38,25 @@ public class ItemController {
     @PostMapping
     public Item addItem(@RequestBody Item item) {
         item.setContact(item.getContactNumber());
-        return itemRepository.save(item);
+        Item saved = itemRepository.save(item);
+
+        // Alert only for LOST reports. A failure here never blocks saving.
+        if ("Lost".equalsIgnoreCase(saved.getStatus())) {
+            try {
+                emailAlertService.sendLostAlert(
+                        Objects.toString(saved.getItemName(), ""),
+                        Objects.toString(saved.getCategory(), ""),
+                        Objects.toString(saved.getLocation(), ""),
+                        Objects.toString(saved.getItemDate(), ""),
+                        Objects.toString(saved.getDescription(), ""),
+                        Objects.toString(saved.getStudentName(), ""),
+                        Objects.toString(saved.getEmail(), ""));
+            } catch (Exception e) {
+                log.error("Lost-item alert could not be started", e);
+            }
+        }
+
+        return saved;
     }
 
     @PutMapping("/{id}")
