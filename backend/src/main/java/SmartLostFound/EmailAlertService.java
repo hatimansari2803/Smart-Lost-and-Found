@@ -118,7 +118,7 @@ public class EmailAlertService {
                 + row("Contact email", reporterEmail)
                 + "</table>"
                 + "<p style=\"color:#70737c;font-size:12px\">"
-                + "ARMIET Smart Lost &amp; Found - student project (test mode)</p>"
+                + "Smart Lost and Found Management Portal - A Web-Based Platform for Item Recovery</p>"   // <-- changed line
                 + "</div>";
     }
 
